@@ -1,0 +1,80 @@
+<form (ngSubmit)="onSubmit(formData)" #form="ngForm">
+  <fieldset>
+    <legend>{{ formData.label }}</legend>
+    <div *ngFor="let formField of formData.formFields">
+      <fieldset>
+        <legend>{{ formField.label }}</legend>
+        <div *ngFor="let field of formField.fields">
+          <div *ngIf="field.type === 'text'">
+            <label>{{ field.label }}</label>
+            <input
+              type="text"
+              [(ngModel)]="formData[field.name]"
+              name="{{ field.name }}"
+              [placeholder]="field.placeholder"
+              [required]="field.validations.isRequired"
+              pattern="{{ field.validations.pattern }}"
+            />
+            <div *ngIf="isNameInvalid(field.name, field)">
+              Please enter a valid {{ field.label }}.
+            </div>
+          </div>
+          <div *ngIf="field.type === 'date'">
+            <label>{{ field.label }}</label>
+            <input
+              type="date"
+              [(ngModel)]="formData[field.name]"
+              name="{{ field.name }}"
+              [required]="field.validations.isRequired"
+            />
+          </div>
+
+          <div *ngIf="field.type === 'radio'">
+            <label>{{ field.label }}</label>
+            <div *ngFor="let option of field.options">
+              <input
+                type="radio"
+                [(ngModel)]="formData[field.name]"
+                name="{{ field.name }}"
+                [value]="option.value"
+                [required]="field.validations.isRequired"
+              />
+              {{ option.label }}
+            </div>
+          </div>
+
+          <div *ngIf="field.type === 'checkbox'">
+            <label>{{ field.label }}</label>
+            <div *ngFor="let option of field.options">
+              <input
+                type="checkbox"
+                [(ngModel)]="option.value"
+                name="{{ field.name }}"
+                [value]="option.value"
+              />
+              {{ option.label }}
+            </div>
+          </div>
+
+          <div *ngIf="field.type === 'select'">
+            <label>{{ field.label }}</label>
+            <select
+              [(ngModel)]="formData[field.name]"
+              name="{{ field.name }}"
+              [required]="field.validations?.isRequired"
+            >
+              <option
+                *ngFor="let option of field.options"
+                [value]="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+  </fieldset>
+  <button type="submit" [disabled]="form.invalid">Submit</button>
+  <button type="button" (click)="resetForm()">Reset</button>
+</form>
